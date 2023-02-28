@@ -1,5 +1,6 @@
 package com.learn.contest.ViewModel
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.learn.contest.repo.AllContest
@@ -15,13 +16,14 @@ class MainViewModel constructor(private val repository: MainRepository) :ViewMod
 
     fun getAllContest(){
 
-        val response = repository.getAllContest()
+        val response = repository.getallcontest()
         response.enqueue(object : Callback<List<AllContest>> {
             override fun onResponse(
                 call: Call<List<AllContest>>,
                 response: Response<List<AllContest>>
             ) {
                 allcontest.postValue(response.body())
+                Log.d("DATA",response.body().toString())
             }
 
             override fun onFailure(call: Call<List<AllContest>>, t: Throwable) {

@@ -15,16 +15,18 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class MainViewModel constructor(private val repository: MainRepository,
-private val applicationContext:Context) :ViewModel(){
+class MainViewModel constructor(
+    private val repository: MainRepository,
+    private val applicationContext: Context
+) : ViewModel() {
 
     val allcontest = MutableLiveData<List<AllContest>>()
     val errorMessage = MutableLiveData<String>()
     val dbhelper = ContestDatabase.getInstance(applicationContext)
 
-    fun getAllContest(){
+    fun getAllContest() {
 
-        if(NetworkUtils.isInternetAvailable(applicationContext)){
+        if (NetworkUtils.isInternetAvailable(applicationContext)) {
             val response = repository.getallcontest()
 
             response.enqueue(object : Callback<List<AllContest>> {
@@ -33,19 +35,16 @@ private val applicationContext:Context) :ViewModel(){
                     call: Call<List<AllContest>>,
                     response: Response<List<AllContest>>
                 ) {
-                    var z:List<AllContest> ?=  response.body()
+                    var z: List<AllContest>? = response.body()
                     allcontest.postValue(z)
-//                    var cs = mutableListOf<ContestStore>()
                     GlobalScope.launch {
-                        if(z!=null){
-                            for (t in z){
-                                dbhelper.contestDao().insert(ContestStore(t.name,t.url))
+                        if (z != null) {
+                            for (t in z) {
+                                dbhelper.contestDao().insert(ContestStore(t.name, t.url))
                             }
-//                        dbhelper.contestDao().insert(cs)
                         }
                     }
-
-                    Log.d("DATA",response.body().toString())
+                    Log.d("DATA", response.body().toString())
                 }
 
                 override fun onFailure(call: Call<List<AllContest>>, t: Throwable) {
@@ -53,23 +52,21 @@ private val applicationContext:Context) :ViewModel(){
                 }
             })
 
-        }
-        else {
-            Log.d("DATABASE","Data base fetching")
+        } else {
+            Log.d("DATABASE", "Data base fetching")
             return getfromdatabase()
         }
     }
 
-    private fun getfromdatabase(){
+    private fun getfromdatabase() {
         GlobalScope.launch {
             var cs = dbhelper.contestDao().getallcontest()
             var ac = mutableListOf<AllContest>()
 
-            for(t in cs){
-                ac.add(AllContest(t.name,t.url,"","","","","",""))
+            for (t in cs) {
+                ac.add(AllContest(t.name, t.url, "", "", "", "", "", ""))
             }
-            allcontest.postValue(ac)}
-
-
+            allcontest.postValue(ac)
+        }
     }
 }

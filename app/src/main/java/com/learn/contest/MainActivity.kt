@@ -12,10 +12,11 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val allcontestBtn :Button = findViewById(R.id.allcontestBtn)
-        allcontestBtn.setOnClickListener(){
+        val allcontestBtn: Button = findViewById(R.id.allcontestBtn)
+        allcontestBtn.text = "All Contest"
+        allcontestBtn.setOnClickListener() {
 
-            val intent = Intent(this,AllContestActivity::class.java)
+            val intent = Intent(this, AllContestActivity::class.java)
             startActivity(intent)
 
         }

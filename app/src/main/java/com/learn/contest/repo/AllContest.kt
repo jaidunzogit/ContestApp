@@ -1,8 +1,5 @@
 package com.learn.contest.repo
 
-import com.google.gson.annotations.SerializedName
-import okhttp3.HttpUrl
-
 data class AllContest(
     var name: String,
 

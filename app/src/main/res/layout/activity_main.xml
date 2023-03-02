@@ -12,7 +12,6 @@
       android:layout_height="wrap_content"
       android:layout_marginLeft="28dp"
       android:layout_marginTop="28dp"
-      android:text="All Contest"
       android:textColor="#FFFFFF"
       app:cornerRadius="100dp"
       app:layout_constraintStart_toStartOf="parent"

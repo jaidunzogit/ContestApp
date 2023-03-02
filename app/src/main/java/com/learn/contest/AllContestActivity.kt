@@ -19,30 +19,32 @@ class AllContestActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAllContestBinding
     lateinit var viewModel: MainViewModel
     private val retrofit = RetrofitService.getInstance()
-    val adapter = AllContestAdapter()
+    val adapter = AllContestAdapter(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_all_contest)
 
         binding = ActivityAllContestBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.allcontestRecyclerView.layoutManager=LinearLayoutManager(this)
+        binding.allcontestRecyclerView.layoutManager = LinearLayoutManager(this)
 
 
-        viewModel = ViewModelProvider(this,MyViewModelFactory(MainRepository(retrofit),applicationContext)).get(MainViewModel::class.java)
+        viewModel = ViewModelProvider(
+            this,
+            MyViewModelFactory(MainRepository(retrofit), applicationContext)
+        ).get(MainViewModel::class.java)
 
-        binding.allcontestRecyclerView.adapter=adapter
+        binding.allcontestRecyclerView.adapter = adapter
 
 
 
-        viewModel.allcontest.observe(this,{
-            Log.d(TAG,"onCreate: $it")
+        viewModel.allcontest.observe(this, {
+            Log.d(TAG, "onCreate: $it")
             adapter.setAllContestList(it)
         })
 
-        viewModel.errorMessage.observe(this,{})
+        viewModel.errorMessage.observe(this, {})
 
         viewModel.getAllContest()
 

@@ -1,14 +1,18 @@
 package com.learn.contest.RecyclerView
 
-import android.nfc.Tag
+import android.content.Intent
+import android.net.Uri
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.learn.contest.R
 import com.learn.contest.repo.AllContest
+
 
 class AllContestAdapter:RecyclerView.Adapter<AllContestAdapter.AllContestViewHolder>() {
 
@@ -30,7 +34,10 @@ class AllContestAdapter:RecyclerView.Adapter<AllContestAdapter.AllContestViewHol
     override fun onBindViewHolder(holder: AllContestViewHolder, position: Int) {
              val singlecontest = allcontest[position]
             holder.name.text = singlecontest.name
-//            holder.url.text = singlecontest.url.toString()
+            holder.url.text = singlecontest.url
+//                val openURL = Intent(android.content.Intent.ACTION_VIEW)
+//                openURL.data = Uri.parse(singlecontest.url)
+
         println(singlecontest.name)
         Log.d(TAG,"RUNNED")
     }
@@ -39,10 +46,13 @@ class AllContestAdapter:RecyclerView.Adapter<AllContestAdapter.AllContestViewHol
         return allcontest.size
     }
 
+
+
     class AllContestViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
          val name:TextView = itemView.findViewById(R.id.name)
-         val url:TextView = itemView.findViewById(R.id.url)
+         val url:Button = itemView.findViewById(R.id.url)
+
 
     }
 

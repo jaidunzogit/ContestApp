@@ -1,5 +1,6 @@
 package com.learn.contest
 
+import android.app.Application
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -30,9 +31,10 @@ class AllContestActivity : AppCompatActivity() {
         binding.allcontestRecyclerView.layoutManager=LinearLayoutManager(this)
 
 
-        viewModel = ViewModelProvider(this,MyViewModelFactory(MainRepository(retrofit))).get(MainViewModel::class.java)
+        viewModel = ViewModelProvider(this,MyViewModelFactory(MainRepository(retrofit),applicationContext)).get(MainViewModel::class.java)
 
         binding.allcontestRecyclerView.adapter=adapter
+
 
 
         viewModel.allcontest.observe(this,{

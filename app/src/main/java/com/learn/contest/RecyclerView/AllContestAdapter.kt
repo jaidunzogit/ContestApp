@@ -2,6 +2,7 @@ package com.learn.contest.RecyclerView
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.net.Uri
 import android.util.Log
 import android.view.LayoutInflater
@@ -9,7 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.learn.contest.R
 import com.learn.contest.repo.AllContest
@@ -34,18 +35,28 @@ class AllContestAdapter(val context: Context) :
     }
 
     override fun onBindViewHolder(holder: AllContestViewHolder, position: Int) {
+
         val singlecontest = allcontest[position]
+
+        holder.cardView.setCardBackgroundColor(Color.parseColor("#76F9C3"))
+
+        holder.cn.text = "CONTEST NAME  :"
+        holder.cn.setTextColor(Color.parseColor("#ff0000"))
+        holder.cn.setTextSize(16F)
+
+
         holder.name.text = singlecontest.name
-        holder.url.text = "Visit the Site"
+        holder.name.setTextColor(Color.parseColor("#000000"))
+        holder.name.setTextSize(17F)
+        holder.name.setPadding(20,0,0,0)
+
+        holder.url.text = "Visit the Contest Page"
 
         holder.url.setOnClickListener() {
             val openURL = Intent(android.content.Intent.ACTION_VIEW)
             openURL.data = Uri.parse(singlecontest.url)
             context.startActivity(openURL)
         }
-
-        println(singlecontest.name)
-        Log.d(TAG, "RUNNED")
     }
 
     override fun getItemCount(): Int {
@@ -57,8 +68,8 @@ class AllContestAdapter(val context: Context) :
 
         val name: TextView = itemView.findViewById(R.id.name)
         val url: Button = itemView.findViewById(R.id.url)
-
-
+        val cn: TextView = itemView.findViewById(R.id.cn)
+        val cardView:CardView = itemView.findViewById(R.id.card_view)
     }
 
 }

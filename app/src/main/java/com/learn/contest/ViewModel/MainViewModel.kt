@@ -1,72 +1,77 @@
 package com.learn.contest.ViewModel
 
+
 import android.content.Context
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.learn.contest.NetworkUtilities.NetworkUtils
+import androidx.lifecycle.viewModelScope
 import com.learn.contest.db.ContestDatabase
 import com.learn.contest.db.ContestStore
 import com.learn.contest.repo.AllContest
 import com.learn.contest.repo.MainRepository
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 class MainViewModel constructor(
     private val repository: MainRepository,
-    private val applicationContext: Context
+    applicationContext: Context
 ) : ViewModel() {
 
+    //  allcontest is Going to be observed
     val allcontest = MutableLiveData<List<AllContest>>()
     val errorMessage = MutableLiveData<String>()
-    val dbhelper = ContestDatabase.getInstance(applicationContext)
 
+    //   Database object
+    private val dbhelper = ContestDatabase.getInstance(applicationContext)
+
+
+    //   function to set the data into allcontest to be observed
     fun getAllContest() {
 
-        if (NetworkUtils.isInternetAvailable(applicationContext)) {
-            val response = repository.getallcontest()
+        val response = repository.getallcontest()
 
-            response.enqueue(object : Callback<List<AllContest>> {
+        response.enqueue(object : Callback<List<AllContest>> {
 
-                override fun onResponse(
-                    call: Call<List<AllContest>>,
-                    response: Response<List<AllContest>>
-                ) {
-                    var z: List<AllContest>? = response.body()
-                    allcontest.postValue(z)
-                    GlobalScope.launch {
-                        if (z != null) {
-                            for (t in z) {
-                                dbhelper.contestDao().insert(ContestStore(t.name, t.url))
-                            }
-                        }
-                    }
-                    Log.d("DATA", response.body().toString())
+            override fun onResponse(
+                call: Call<List<AllContest>>,
+                response: Response<List<AllContest>>
+            ) {
+
+                allcontest.postValue(response.body())
+
+                viewModelScope.launch {
+                    setintodatabase(response.body())
                 }
+                Log.d("DATA", "From Api")
+            }
 
-                override fun onFailure(call: Call<List<AllContest>>, t: Throwable) {
-                    allcontest.postValue(emptyList())
-                }
-            })
+            override fun onFailure(call: Call<List<AllContest>>, t: Throwable) {
+                Log.d("DATA", "Data base fetching")
+                viewModelScope.launch { getfromdatabase() }
+            }
+        })
 
-        } else {
-            Log.d("DATABASE", "Data base fetching")
-            return getfromdatabase()
+    }
+
+    private suspend fun setintodatabase(z: List<AllContest>?) = withContext(Dispatchers.Default) {
+        if (z != null) {
+            for (t in z) {
+                dbhelper.contestDao().insert(ContestStore(t.name, t.url))
+            }
         }
     }
 
-    private fun getfromdatabase() {
-        GlobalScope.launch {
-            var cs = dbhelper.contestDao().getallcontest()
-            var ac = mutableListOf<AllContest>()
+    private suspend fun getfromdatabase() = withContext(Dispatchers.Default) {
+        val cs = dbhelper.contestDao().getallcontest()
+        val ac = mutableListOf<AllContest>()
 
-            for (t in cs) {
-                ac.add(AllContest(t.name, t.url, "", "", "", "", "", ""))
-            }
-            allcontest.postValue(ac)
+        for (t in cs) {
+            ac.add(AllContest(t.name, t.url, "", "", "", "", "", ""))
         }
+        allcontest.postValue(ac)
+
     }
 }

@@ -22,5 +22,5 @@ data class AllContest(
     var in_24_hours: String,
 
 
-    var status: String
+    var status: String,
 )

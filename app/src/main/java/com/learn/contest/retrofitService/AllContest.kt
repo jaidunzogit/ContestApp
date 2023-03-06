@@ -1,4 +1,4 @@
-package com.learn.contest.repo
+package com.learn.contest.retrofitService
 
 data class AllContest(
     var name: String,

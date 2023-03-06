@@ -1,4 +1,4 @@
-package com.learn.contest.ViewModel
+package com.learn.contest.viewModel
 
 
 import android.content.Context
@@ -8,7 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.learn.contest.db.ContestDatabase
 import com.learn.contest.db.ContestStore
-import com.learn.contest.repo.AllContest
+import com.learn.contest.retrofitService.AllContest
 import com.learn.contest.repo.MainRepository
 import kotlinx.coroutines.*
 import retrofit2.Call
@@ -17,7 +17,7 @@ import retrofit2.Response
 
 class MainViewModel constructor(
     private val repository: MainRepository,
-    applicationContext: Context
+    context: Context
 ) : ViewModel() {
 
     //  allcontest is Going to be observed
@@ -25,7 +25,7 @@ class MainViewModel constructor(
     val errorMessage = MutableLiveData<String>()
 
     //   Database object
-    private val dbhelper = ContestDatabase.getInstance(applicationContext)
+    private val dbhelper = ContestDatabase.getInstance(context)
 
 
     //   function to set the data into allcontest to be observed
@@ -33,19 +33,25 @@ class MainViewModel constructor(
 
         val response = repository.getallcontest()
 
+        Log.d("DATA",response.toString())
+
         response.enqueue(object : Callback<List<AllContest>> {
 
             override fun onResponse(
                 call: Call<List<AllContest>>,
                 response: Response<List<AllContest>>
             ) {
-
-                allcontest.postValue(response.body())
-
-                viewModelScope.launch {
-                    setintodatabase(response.body())
+                if(response.isSuccessful){
+                    allcontest.postValue(response.body())
+                    viewModelScope.launch {
+                        setintodatabase(response.body())
+                    }
+                    Log.d("DATA", "From Api")
                 }
-                Log.d("DATA", "From Api")
+                else{
+                    Log.d("Request Error :: ",response.body().toString())
+                }
+
             }
 
             override fun onFailure(call: Call<List<AllContest>>, t: Throwable) {
@@ -59,7 +65,7 @@ class MainViewModel constructor(
     private suspend fun setintodatabase(z: List<AllContest>?) = withContext(Dispatchers.Default) {
         if (z != null) {
             for (t in z) {
-                dbhelper.contestDao().insert(ContestStore(t.name, t.url))
+                dbhelper.contestDao().insert(ContestStore(t.name, t.url,t.start_time,t.end_time,t.duration,t.site,t.in_24_hours,t.status))
             }
         }
     }
@@ -69,7 +75,7 @@ class MainViewModel constructor(
         val ac = mutableListOf<AllContest>()
 
         for (t in cs) {
-            ac.add(AllContest(t.name, t.url, "", "", "", "", "", ""))
+            ac.add(AllContest(t.name, t.url,t.start_time,t.end_time,t.duration,t.site,t.in_24_hours,t.status))
         }
         allcontest.postValue(ac)
 

@@ -5,19 +5,19 @@ import android.os.Bundle
 import android.util.Log
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.learn.contest.RecyclerView.AllContestAdapter
-import com.learn.contest.RetrofitService.RetrofitService
-import com.learn.contest.ViewModel.MainViewModel
-import com.learn.contest.ViewModel.MyViewModelFactory
+import com.learn.contest.recyclerView.AllContestAdapter
+import com.learn.contest.retrofitService.RetrofitService
+import com.learn.contest.viewModel.MainViewModel
+import com.learn.contest.viewModel.MyViewModelFactory
 import com.learn.contest.databinding.ActivityAllContestBinding
 import com.learn.contest.repo.MainRepository
 
 class AllContestActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityAllContestBinding
-    lateinit var viewModel: MainViewModel
+    private lateinit var viewModel: MainViewModel
     private val retrofit = RetrofitService.getInstance()
-    val adapter = AllContestAdapter(this)
+    private val adapter = AllContestAdapter(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,8 +32,8 @@ class AllContestActivity : AppCompatActivity() {
 //      Creating the ViewModel
         viewModel = ViewModelProvider(
             this,
-            MyViewModelFactory(MainRepository(retrofit), applicationContext)
-        ).get(MainViewModel::class.java)
+            MyViewModelFactory(MainRepository(retrofit), this)
+        )[MainViewModel::class.java]
 
 //      Binding the recyclerView with the AllContestAdapter
         binding.allcontestRecyclerView.adapter = adapter
@@ -41,23 +41,16 @@ class AllContestActivity : AppCompatActivity() {
 //       Showing the data
         viewModel.getAllContest()
 
+
 //      Observing the data
-        viewModel.allcontest.observe(this, {
+        viewModel.allcontest.observe(this) {
             Log.d("DATA", "onCreate: $it")
             adapter.setAllContestList(it)
-        })
+        }
 
-        viewModel.errorMessage.observe(this, {})
+        viewModel.errorMessage.observe(this) {}
 
 
     }
 
-    override fun onPause() {
-        super.onPause()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        Log.d("DATA", "Contest Activity Destroyed")
-    }
 }

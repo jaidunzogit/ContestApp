@@ -1,10 +1,9 @@
-package com.learn.contest.RecyclerView
+package com.learn.contest.recyclerView
 
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,14 +12,13 @@ import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.learn.contest.R
-import com.learn.contest.repo.AllContest
+import com.learn.contest.retrofitService.AllContest
 
 
-class AllContestAdapter(val context: Context) :
+class AllContestAdapter(private val context: Context) :
     RecyclerView.Adapter<AllContestAdapter.AllContestViewHolder>() {
 
-    private val TAG = "MainActivity"
-    var allcontest = mutableListOf<AllContest>()
+    private var allcontest = mutableListOf<AllContest>()
 
     fun setAllContestList(allcontest: List<AllContest>) {
         this.allcontest = allcontest.toMutableList()
@@ -42,18 +40,18 @@ class AllContestAdapter(val context: Context) :
 
         holder.cn.text = "CONTEST NAME  :"
         holder.cn.setTextColor(Color.parseColor("#ff0000"))
-        holder.cn.setTextSize(16F)
+        holder.cn.textSize = 16F
 
 
         holder.name.text = singlecontest.name
         holder.name.setTextColor(Color.parseColor("#000000"))
-        holder.name.setTextSize(17F)
+        holder.name.textSize = 17F
         holder.name.setPadding(20,0,0,0)
 
         holder.url.text = "Visit the Contest Page"
 
-        holder.url.setOnClickListener() {
-            val openURL = Intent(android.content.Intent.ACTION_VIEW)
+        holder.url.setOnClickListener {
+            val openURL = Intent(Intent.ACTION_VIEW)
             openURL.data = Uri.parse(singlecontest.url)
             context.startActivity(openURL)
         }

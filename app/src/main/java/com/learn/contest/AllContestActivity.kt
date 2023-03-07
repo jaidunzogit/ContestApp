@@ -3,6 +3,7 @@ package com.learn.contest
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.learn.contest.recyclerView.AllContestAdapter
@@ -26,8 +27,15 @@ class AllContestActivity : AppCompatActivity() {
         binding = ActivityAllContestBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+
+
 //      Binding the RecyclerView
         binding.allcontestRecyclerView.layoutManager = LinearLayoutManager(this)
+
+//      Binding the recyclerView with the AllContestAdapter
+        binding.allcontestRecyclerView.adapter = adapter
+
+        Log.d("BAR",binding.loadingBar.visibility.toString())
 
 //      Creating the ViewModel
         viewModel = ViewModelProvider(
@@ -35,20 +43,18 @@ class AllContestActivity : AppCompatActivity() {
             MyViewModelFactory(MainRepository(retrofit), this)
         )[MainViewModel::class.java]
 
-//      Binding the recyclerView with the AllContestAdapter
-        binding.allcontestRecyclerView.adapter = adapter
 
-//       Showing the data
         viewModel.getAllContest()
-
 
 //      Observing the data
         viewModel.allcontest.observe(this) {
             Log.d("DATA", "onCreate: $it")
+            binding.loadingBar.visibility= View.GONE
             adapter.setAllContestList(it)
         }
 
         viewModel.errorMessage.observe(this) {}
+
 
 
     }

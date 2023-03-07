@@ -27,11 +27,16 @@ class MainViewModel constructor(
     //   Database object
     private val dbhelper = ContestDatabase.getInstance(context)
 
+    lateinit var response:Call<List<AllContest>>
 
     //   function to set the data into allcontest to be observed
     fun getAllContest() {
 
-        val response = repository.getallcontest()
+
+        viewModelScope.launch {
+            response = repository.getallcontest()
+        }
+
 
         Log.d("DATA",response.toString())
 
@@ -43,7 +48,10 @@ class MainViewModel constructor(
             ) {
                 if(response.isSuccessful){
                     allcontest.postValue(response.body())
+
+//                    dbhelper.clearAllTables()
                     viewModelScope.launch {
+
                         setintodatabase(response.body())
                     }
                     Log.d("DATA", "From Api")
@@ -63,6 +71,7 @@ class MainViewModel constructor(
     }
 
     private suspend fun setintodatabase(z: List<AllContest>?) = withContext(Dispatchers.Default) {
+        dbhelper.clearAllTables()
         if (z != null) {
             for (t in z) {
                 dbhelper.contestDao().insert(ContestStore(t.name, t.url,t.start_time,t.end_time,t.duration,t.site,t.in_24_hours,t.status))

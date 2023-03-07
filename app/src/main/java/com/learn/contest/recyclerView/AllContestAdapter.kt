@@ -20,7 +20,12 @@ class AllContestAdapter(private val context: Context) :
 
     private var allcontest = mutableListOf<AllContest>()
 
+
+
     fun setAllContestList(allcontest: List<AllContest>) {
+
+
+
         this.allcontest = allcontest.toMutableList()
         notifyDataSetChanged()
     }

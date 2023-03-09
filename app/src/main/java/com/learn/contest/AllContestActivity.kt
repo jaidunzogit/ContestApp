@@ -32,6 +32,9 @@ class AllContestActivity : AppCompatActivity() {
 //      Binding the RecyclerView
         binding.allcontestRecyclerView.layoutManager = LinearLayoutManager(this)
 
+        binding.allcontestRecyclerView.visibility = View.GONE
+        binding.loadingBar.visibility = View.VISIBLE
+
 //      Binding the recyclerView with the AllContestAdapter
         binding.allcontestRecyclerView.adapter = adapter
 
@@ -49,7 +52,10 @@ class AllContestActivity : AppCompatActivity() {
 //      Observing the data
         viewModel.allcontest.observe(this) {
             Log.d("DATA", "onCreate: $it")
-            binding.loadingBar.visibility= View.GONE
+
+            binding.loadingBar.visibility = View.GONE
+            binding.allcontestRecyclerView.visibility = View.VISIBLE
+
             adapter.setAllContestList(it)
         }
 

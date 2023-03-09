@@ -1,14 +1,11 @@
 package com.learn.contest
 
 import android.content.Intent
-import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
-import androidx.lifecycle.whenCreated
-import com.learn.contest.repo.MainRepository
-import com.learn.contest.retrofitService.RetrofitService
-import kotlinx.coroutines.launch
+import androidx.core.content.ContextCompat
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -21,9 +18,10 @@ class MainActivity : AppCompatActivity() {
 //      Button to enter the all contest
 
         val allcontestBtn: Button = findViewById(R.id.allcontestBtn)
-        allcontestBtn.text = "All Contest"
-        allcontestBtn.setTextColor(Color.parseColor("#ff0000"))
-        allcontestBtn.setBackgroundColor(Color.parseColor("#ffffff"))
+        allcontestBtn.setText(R.string.allcontest_text)
+        allcontestBtn.setTextColor(ContextCompat.getColor(applicationContext,R.color.text_Colour))
+//        allcontestBtn.setBackgroundColor(ContextCompat.getColor(applicationContext,R.color.bgn_color))
+
 
 //        Entering into AllcontestActivity
 

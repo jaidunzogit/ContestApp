@@ -27,7 +27,7 @@ class MainViewModel constructor(
     //   Database object
     private val dbhelper = ContestDatabase.getInstance(context)
 
-    lateinit var response:Call<List<AllContest>>
+    private lateinit var response:Call<List<AllContest>>
 
     //   function to set the data into allcontest to be observed
     fun getAllContest() {

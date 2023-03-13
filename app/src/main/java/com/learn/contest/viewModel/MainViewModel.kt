@@ -8,14 +8,17 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.learn.contest.db.ContestDatabase
 import com.learn.contest.db.ContestStore
+import com.learn.contest.notificationManager.Notifications
 import com.learn.contest.retrofitService.AllContest
 import com.learn.contest.repo.MainRepository
 import kotlinx.coroutines.*
+import okhttp3.internal.notify
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 class MainViewModel constructor(
+    private val notify:Notifications,
     private val repository: MainRepository,
     context: Context
 ) : ViewModel() {
@@ -64,6 +67,7 @@ class MainViewModel constructor(
 
             override fun onFailure(call: Call<List<AllContest>>, t: Throwable) {
                 Log.d("DATA", "Data base fetching")
+                notify.createNotification("Turn on your Internet Connection","Data may be older hence can be Wrong")
                 viewModelScope.launch { getfromdatabase() }
             }
         })

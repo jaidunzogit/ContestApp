@@ -11,10 +11,12 @@ import com.learn.contest.retrofitService.RetrofitService
 import com.learn.contest.viewModel.MainViewModel
 import com.learn.contest.viewModel.MyViewModelFactory
 import com.learn.contest.databinding.ActivityAllContestBinding
+import com.learn.contest.notificationManager.Notifications
 import com.learn.contest.repo.MainRepository
 
 class AllContestActivity : AppCompatActivity() {
 
+    private lateinit var notify:Notifications
     private lateinit var binding: ActivityAllContestBinding
     private lateinit var viewModel: MainViewModel
     private val retrofit = RetrofitService.getInstance()
@@ -38,12 +40,14 @@ class AllContestActivity : AppCompatActivity() {
 //      Binding the recyclerView with the AllContestAdapter
         binding.allcontestRecyclerView.adapter = adapter
 
-        Log.d("BAR",binding.loadingBar.visibility.toString())
+//      Handling the notifications
+        notify = Notifications(this)
+        notify.createNotificationchannel()
 
 //      Creating the ViewModel
         viewModel = ViewModelProvider(
             this,
-            MyViewModelFactory(MainRepository(retrofit), this)
+            MyViewModelFactory(notify,MainRepository(retrofit), this)
         )[MainViewModel::class.java]
 
 

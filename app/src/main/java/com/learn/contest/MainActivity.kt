@@ -5,15 +5,17 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import androidx.core.content.ContextCompat
+import com.learn.contest.notificationManager.Notifications
 
 
 class MainActivity : AppCompatActivity() {
 
+    lateinit  private var notify:Notifications
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
+        notify = Notifications(this)
 
 //      Button to enter the all contest
 
@@ -24,11 +26,10 @@ class MainActivity : AppCompatActivity() {
 
 
 //        Entering into AllcontestActivity
-
+        notify.createNotificationchannel()
         allcontestBtn.setOnClickListener {
             val intent = Intent(this, AllContestActivity::class.java)
             startActivity(intent)
-
         }
     }
 }

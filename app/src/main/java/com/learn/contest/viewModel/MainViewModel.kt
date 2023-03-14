@@ -12,13 +12,12 @@ import com.learn.contest.notificationManager.Notifications
 import com.learn.contest.retrofitService.AllContest
 import com.learn.contest.repo.MainRepository
 import kotlinx.coroutines.*
-import okhttp3.internal.notify
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 class MainViewModel constructor(
-    private val notify:Notifications,
+    private val notify: Notifications,
     private val repository: MainRepository,
     context: Context
 ) : ViewModel() {
@@ -30,7 +29,7 @@ class MainViewModel constructor(
     //   Database object
     private val dbhelper = ContestDatabase.getInstance(context)
 
-    private lateinit var response:Call<List<AllContest>>
+    private lateinit var response: Call<List<AllContest>>
 
     //   function to set the data into allcontest to be observed
     fun getAllContest() {
@@ -41,7 +40,7 @@ class MainViewModel constructor(
         }
 
 
-        Log.d("DATA",response.toString())
+        Log.d("DATA", response.toString())
 
         response.enqueue(object : Callback<List<AllContest>> {
 
@@ -49,25 +48,29 @@ class MainViewModel constructor(
                 call: Call<List<AllContest>>,
                 response: Response<List<AllContest>>
             ) {
-                if(response.isSuccessful){
+                if (response.isSuccessful) {
                     allcontest.postValue(response.body())
-
+                    notify.createNotification(
+                        "Internet Connection is ON",
+                        "Fetching the latest Contest Data"
+                    )
 //                    dbhelper.clearAllTables()
                     viewModelScope.launch {
-
                         setintodatabase(response.body())
                     }
                     Log.d("DATA", "From Api")
-                }
-                else{
-                    Log.d("Request Error :: ",response.body().toString())
+                } else {
+                    Log.d("Request Error :: ", response.body().toString())
                 }
 
             }
 
             override fun onFailure(call: Call<List<AllContest>>, t: Throwable) {
                 Log.d("DATA", "Data base fetching")
-                notify.createNotification("Turn on your Internet Connection","Data may be older hence can be Wrong")
+                notify.createNotification(
+                    "Turn on your Internet Connection",
+                    "Data may be older hence can be Wrong"
+                )
                 viewModelScope.launch { getfromdatabase() }
             }
         })
@@ -78,7 +81,18 @@ class MainViewModel constructor(
         dbhelper.clearAllTables()
         if (z != null) {
             for (t in z) {
-                dbhelper.contestDao().insert(ContestStore(t.name, t.url,t.start_time,t.end_time,t.duration,t.site,t.in_24_hours,t.status))
+                dbhelper.contestDao().insert(
+                    ContestStore(
+                        t.name,
+                        t.url,
+                        t.start_time,
+                        t.end_time,
+                        t.duration,
+                        t.site,
+                        t.in_24_hours,
+                        t.status
+                    )
+                )
             }
         }
     }
@@ -88,7 +102,18 @@ class MainViewModel constructor(
         val ac = mutableListOf<AllContest>()
 
         for (t in cs) {
-            ac.add(AllContest(t.name, t.url,t.start_time,t.end_time,t.duration,t.site,t.in_24_hours,t.status))
+            ac.add(
+                AllContest(
+                    t.name,
+                    t.url,
+                    t.start_time,
+                    t.end_time,
+                    t.duration,
+                    t.site,
+                    t.in_24_hours,
+                    t.status
+                )
+            )
         }
         allcontest.postValue(ac)
 

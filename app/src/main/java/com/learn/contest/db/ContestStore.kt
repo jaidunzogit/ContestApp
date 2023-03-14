@@ -6,19 +6,14 @@ import androidx.room.PrimaryKey
 import com.squareup.moshi.Json
 
 
-
 @Entity(tableName = "ContestStore")
 data class ContestStore(
 
-    @PrimaryKey
-    @ColumnInfo(name = "contest_name")
-    val name: String,
+    @PrimaryKey @ColumnInfo(name = "contest_name") val name: String,
 
-    @ColumnInfo(name = "url")
-    val url: String,
+    @ColumnInfo(name = "url") val url: String,
 
-    @field:Json(name = "st")
-    val start_time: String,
+    @field:Json(name = "st") val start_time: String,
 
     val end_time: String,
 

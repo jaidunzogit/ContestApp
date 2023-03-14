@@ -8,19 +8,17 @@ import retrofit2.http.GET
 interface RetrofitService {
 
     @GET("/api/v1/all")
-    fun getAllContest() : Call<List<AllContest>>
+    fun getAllContest(): Call<List<AllContest>>
 
     companion object {
 
         private var retrofitService: RetrofitService? = null
 
-        fun getInstance() : RetrofitService {
+        fun getInstance(): RetrofitService {
 
             if (retrofitService == null) {
-                val retrofit = Retrofit.Builder()
-                    .baseUrl("https://kontests.net/api/")
-                    .addConverterFactory(MoshiConverterFactory.create())
-                    .build()
+                val retrofit = Retrofit.Builder().baseUrl("https://kontests.net/api/")
+                    .addConverterFactory(MoshiConverterFactory.create()).build()
                 retrofitService = retrofit.create(RetrofitService::class.java)
             }
             return retrofitService!!

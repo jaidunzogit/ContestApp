@@ -17,10 +17,8 @@ abstract class ContestDatabase : RoomDatabase() {
         fun getInstance(ctx: Context): ContestDatabase {
             if (instance == null) {
                 instance = Room.databaseBuilder(
-                    ctx.applicationContext, ContestDatabase::class.java,
-                    "contest_database"
-                )
-                    .build()
+                    ctx.applicationContext, ContestDatabase::class.java, "contest_database"
+                ).build()
             }
             return instance!!
         }
